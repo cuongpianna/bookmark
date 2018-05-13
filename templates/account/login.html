@@ -1,0 +1,15 @@
+{%extends 'base.html'%}
+
+{% block tittle %}Login{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Login</h1>
+    <form action="" method="post" class="form-control">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <p><input type="submit" class="btn btn-success" value="Login"></p>
+    </form>
+    <a href="{% url 'social:begin' 'github' %}">Login with GitHub</a><br>
+</div>
+{% endblock %}
