@@ -71,33 +71,7 @@
         <script src="{% static 'js/bootstrap.js' %}"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-        <script>
 
-            $(document).ready(function () {
-                $('.like').click(function (e) {
-                    e.preventDefault();
-                    catid = $(this).attr("data-catid");
-                    $.post("{% url 'like' %}", {id: $(this).data('id'),action: $(this).data('action') },
-                        function (data) {
-                            if (data['status'] == 'ok') {
-                                var previous_action = $('a.like').data('action');
-
-                                // toggle data-action
-                                $('a.like').data('action', previous_action == 'like' ?
-                                    'unlike' : 'like');
-                                // toggle link text
-                                $('a.like').text(previous_action == 'like' ? 'Unlike' :
-                                    'Like');
-                                var previous_likes = parseInt($('span.count .total').text());
-                                $('span.count .total').text(previous_action == 'like' ?
-                                    previous_likes + 1 : previous_likes - 1);
-                            }
-                        }
-                        );
-                });
-
-            });
-        </script>
     {% endblock %}
 </div>
 </body>

@@ -33,10 +33,10 @@ def post_detail(request,id):
     post = get_object_or_404(Post,id=id)
     return render(request,'post/detail.html',{'section':'images','post':post})
 
-@require_POST
-@ajax_required
 @csrf_exempt
 @login_required
+@ajax_required
+@require_POST
 def post_like(request):
     post_id = request.POST.get('id')
     action = request.POST.get('action')
