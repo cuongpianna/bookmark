@@ -1,26 +1,21 @@
 {%extends 'base.html'%}
-
 {% block tittle %}Login{% endblock %}
-
 {% block content %}
-
-
-<div class="container">
-    {% if form.errors %}
-    <p>
-        Your username and password didn't match.
-        Please try again.
-    </p>
-    {%endif%}
-
-    <h1>Login</h1>
-    <form action="" method="post" class="form-control">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="hidden" name="next" value="{{ next }}" />
-        <p><input type="submit" class="btn btn-success" value="Login"></p>
-    </form>
-    <a href="{% url 'social:begin' 'github' %}">Login with GitHub</a><br>
-    <p><a href="{% url 'password_reset' %}">Forgotten your password?</a></p>
-</div>
-{% endblock %}
+    <div class="container">
+        {% if form.errors %}
+            <p>
+                Your username and password didn't match.
+                Please try again.
+            </p>
+            {%endif%}
+            <h1>Login</h1>
+            <form action="" method="post" class="form-control">
+                {{ form.as_p }}
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}" />
+                <p><input type="submit" class="btn btn-success" value="Login"></p>
+            </form>
+            <a href="{% url 'social:begin' 'github' %}">Login with GitHub</a><br>
+            <p><a href="{% url 'password_reset' %}">Forgotten your password?</a></p>
+        </div>
+    {% endblock %}

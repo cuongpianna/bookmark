@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load thumbnail %}
+{% block title %}{{ user.get_full_name }}{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1>{{ user.get_full_name }}</h1>
+        <div class="profile-info">
+            {% thumbnail user.profile.photo "180x180" crop="100%" as im %}
+            <img src="{{ im.url }}" class="user-detail">
+        {% endthumbnail %}
+    </div>
+
+
+    <span class="count">
+        <span class="total">{{ c }}</span>
+        follower{{ total_followers|pluralize }}
+    </span>
+    <a href="#" data-id="{{ user.id }}" data-action="{{ s }}"
+    class="follow button btn btn-success">
+    {% if s == "follow" %}
+        Follow
+    {% else %}
+        Unfollow
+    {% endif %}
+    </a>
+<div id="image-list" class="image-container">
+    <!--    include "images/image/list_ajax.html" with images=user.images_created.all  -->
+</div>
+</div>
+    <script>
+
+            $(document).ready(function () {
+                $('a.follow').click(function(event) {
+                    /* Act on the event */
+                    event.preventDefault();
+                    $.post("{%url 'user_follow' %}", 
+                        {id: $(this).data('id'),action:$(this).data('action')}, 
+                        function(data) {
+                        /*optional stuff to do after success */
+                        if(data["status"] == "ok"){
+                            var previous_action = $('a.follow').data('action');
+
+                            // toggle data-action
+                            $('a.follow').data('action',previous_action == 'follow' ? 'unfollow' :'follow');
+                            // toggle text
+                            $('a.follow').text(previous_action == 'follow' ? 'Unfollow' : 'Follow');
+
+                            var previuos_total = parseInt($('.total').text());
+                            $('.total').text(previous_action == 'follow' ? previuos_total + 1 : previuos_total-1);
+                        }
+                    });
+                });
+            });
+        </script>
+{% endblock %}

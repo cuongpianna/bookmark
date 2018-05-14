@@ -1,15 +1,19 @@
-from django.shortcuts import render,redirect
-from django.http import HttpResponse
+from django.shortcuts import render,redirect,get_object_or_404
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import authenticate,login
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm, AdminPasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
+from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 
 from social_django.models import UserSocialAuth
 
+from bookmarks.common.decorators import ajax_required
 from .forms import LoginForm,UserRegistrationForm, UserEditForm, ProfileEditForm
-from .models import Profile
+from .models import Profile,Contact
 
 # Create your views here.
 def login(request):
@@ -106,6 +110,42 @@ def password(request):
     else:
         form = PasswordForm(request.user)
     return render(request, 'account/password.html', {'form': form})
+
+@login_required
+def user_list(request):
+    users = User.objects.filter(is_active=True)
+    return render(request,'account/user/list.html',{'section':'people','users':users})
+
+@login_required
+def user_detail(request, username):
+    user = get_object_or_404(User,username=username,is_active=True)
+    c = Contact.objects.filter(user_from=user.id).count
+    cc = Contact.objects.filter(user_from=request.user.id,user_to=user.id)
+    s = 'follow'
+    if cc:
+        s = 'unfollow'
+    else:
+        s = 'follow'
+    return render(request,'account/user/detail.html',{'section': 'people','user': user,'c':c,'s':s})
+
+@csrf_exempt
+@login_required
+@ajax_required
+@require_POST
+def user_follow(request):
+    user_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if user_id and action:
+        try:
+            user = User.objects.get(id=user_id)
+            if action == "follow":
+                Contact.objects.get_or_create(user_from=request.user,user_to=user)
+            else:
+                Contact.objects.filter(user_from=request.user,user_to=user).delete()
+            return JsonResponse({'status':'ok'})
+        except User.DoesNotExist:
+            return JsonResponse({'status':'ko'})
+    return JsonResponse({'status':'ko'})
 
 
 

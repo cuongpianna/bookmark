@@ -1,5 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.models import User
+
 
 from . import views
 
@@ -26,4 +28,12 @@ urlpatterns = [
 
         #edit
         path('edit',views.edit,name = 'edit'),
+
+        #user
+        path('users',views.user_list,name = "user_list"),
+        path('users/<username>/',views.user_detail,name = "user_detail"),
+
+        #follow
+        path('users/follow',views.user_follow,name='user_follow'),
+
 ]

@@ -67,3 +67,4 @@ def post_list(request):
     return render(request,'post/list.html',{'posts':posts})
 
 
+

@@ -3,10 +3,18 @@
     <div class="container">
         {% for p in posts %}
             {# Each "contact" is a Contact model object. #}
-            <div class="">
-                <a href="">{{ request.user.username }}</a>
-                <p>{{ p.title|upper }}</p>
-                <div><img src="{{ p.image.url }}" alt=""></div>
+            <div class="row" style="margin-bottom: 10px">
+                <div class="post">
+                    <div class="post-header">
+                        <img src="{{ request.user.profile.photo.url }}" alt="" style="height: 40px;border-radius: 100%">
+                        <a href="">{{ request.user.username }}</a>
+                        <div style="font-size: 12;color: #e0e0e0">{{ p.created }}</div>
+                    </div>
+                    <div class="post-content">
+                        <p>{{ p.title|upper }}</p>
+                        <div><img src="{{ p.image.url }}" alt=""></div>
+                    </div>
+                </div>
             </div>
         {% endfor %}
         <div class="pagination">

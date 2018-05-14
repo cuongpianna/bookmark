@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Profile
+from .models import Profile,Contact
 
 # Register your models here.
 #register profile for admin
@@ -7,3 +7,4 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ['user','date_of_birth','photo']
 
 admin.site.register(Profile,ProfileAdmin)
+admin.site.register(Contact)
