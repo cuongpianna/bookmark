@@ -6,4 +6,5 @@ urlpatterns = [
     path('detail/<int:id>/',views.post_detail,name='detail'),
     path('like',views.post_like,name='like'),
     path('posts',views.post_list,name='posts'),
+    path('ranking',views.post_ranking,name='ranking')
 ]

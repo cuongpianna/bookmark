@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'posts',
-    'sorl.thumbnail'
+    'sorl.thumbnail',
+    'actions',
 ]
 
 MIDDLEWARE = [
@@ -178,4 +179,9 @@ SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user' : lambda u: reverse_lazy('user_detail',args = [u.username])
 }
+
+#CONFIG redis
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 0
 

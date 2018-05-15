@@ -14,6 +14,8 @@ from social_django.models import UserSocialAuth
 from bookmarks.common.decorators import ajax_required
 from .forms import LoginForm,UserRegistrationForm, UserEditForm, ProfileEditForm
 from .models import Profile,Contact
+from actions.utils import create_action
+from actions.models import Action
 
 # Create your views here.
 def login(request):
@@ -37,7 +39,11 @@ def login(request):
 
 @login_required
 def dash_board(request):
-    return render(request,'account/index.html',{'section':'dashboard'})
+    actions = Action.objects.filter(user=request.user)
+    following_ids = request.user.following.values_list('id',flat=True)
+    if following_ids:
+        actions = actions.filter(user_id__in=following_ids).select_related('user', 'user__profile').prefetch_related('target')
+    return render(request,'account/index.html',{'section':'dashboard','actions':actions})
 
 def register(request):
     if request.method == 'POST':
@@ -50,7 +56,7 @@ def register(request):
                     user_form.cleaned_data['password'])
             # Save the User object
             new_user.save()
-
+            create_action(new_user,'has created an account')
             profile = Profile.objects.create(user=new_user)
             return render(request,
                     'account/register_done.html',
@@ -140,6 +146,7 @@ def user_follow(request):
             user = User.objects.get(id=user_id)
             if action == "follow":
                 Contact.objects.get_or_create(user_from=request.user,user_to=user)
+                create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(user_from=request.user,user_to=user).delete()
             return JsonResponse({'status':'ok'})
